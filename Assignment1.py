@@ -61,7 +61,7 @@ def Falsepos(p0: float, p1: float) -> dict:
     else:
         return None
 
-def main() -> None:
+if __name__ == '__main__':
     p0 = 1.3
     p1 = 2
 
@@ -76,13 +76,7 @@ def main() -> None:
     falsedict = Falsepos(p0, p1)
 
     plt.plot(newtondict['last']['value'], 0, 'ro')
-    plt.annotate(f'({newtondict['last']['value']}, 0)', xy=(newtondict['last']['value'], 0), xytext=(newtondict['last']['value'] + 0.1, 0.5))
+    plt.annotate(f'({round(newtondict['last']['value'], 6)}, 0)', xy=(newtondict['last']['value'], 0), xytext=(newtondict['last']['value'] + 0.1, 0.5))
     plt.show()
 
     #print(f'newton: {newtondict}\nsecant: {secantdict}\nfalse: {falsedict}')
-
-
-    
-
-if __name__ == "__main__":
-    main()

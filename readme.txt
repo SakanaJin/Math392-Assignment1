@@ -4,6 +4,8 @@ If you're trying to run the program on your machine here are some instructions f
 
 If you dont want a virtual environment you can skip steps 1 and 4
 
+python 3.11 or later is required for the requirements.txt
+
 1.) virtual environment (if you care about that)-
     python -m venv .venv
     .\.venv\Scripts\activate.bat (command prompt)

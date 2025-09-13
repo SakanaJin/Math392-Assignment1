@@ -18,7 +18,7 @@ def Newton(p0: float) -> dict: # Newton's Method
         err = abs(temp - p0)
         p0 = temp
         toreturn['secondlast'] = toreturn['last']
-        toreturn['last'] = {'value': p0, 'iteration': i, 'error': err}
+        toreturn['last'] = {'value': p0, 'iteration': i+1, 'error': err}
         if err < TOLERANCE:
             return toreturn
     else:
@@ -32,7 +32,7 @@ def Secant(p0: float, p1: float) -> dict: # Secant Method
         temp = p1 - (fp1*(p1 - p0))/(fp1 - fp0)
         err = abs(temp - p1)
         toreturn['secondlast'] = toreturn['last']
-        toreturn['last'] = {'value': temp, 'iteration': i, 'error': err}
+        toreturn['last'] = {'value': temp, 'iteration': i+1, 'error': err}
         if err < TOLERANCE:
             return toreturn
         p0 = p1
@@ -50,7 +50,7 @@ def Falsepos(p0: float, p1: float) -> dict: # False Position Method
         temp = p1 - (fp1*(p1 - p0))/(fp1 - fp0)
         err = abs(temp - p1)
         toreturn['secondlast'] = toreturn['last']
-        toreturn['last'] = {'value': temp, 'iteration': i, 'error': err}
+        toreturn['last'] = {'value': temp, 'iteration': i+1, 'error': err}
         if err < TOLERANCE:
             return toreturn
         ftemp = f(temp)
@@ -97,55 +97,55 @@ if __name__ == '__main__':
     axs[2].annotate(f'({round(falsedict['last']['value'], 6)}, 0)', xy=(falsedict['last']['value'], 0), xytext=(falsedict['last']['value'] + 0.1, 0.5))
 
     # create tables from data
-    field_names = ["Value", "Iteration", "Error"]
+    field_names = ["Value", "Iteration", "|p(n-1) - p(n)|", "Relative Error", "Absolute Error"]
 
     newtontable = PrettyTable()
     newtontable.field_names = field_names
+    newton_second_rel_err = abs(accepted_value - newtondict['secondlast']['value'])
+    newton_last_rel_err = abs(accepted_value - newtondict['last']['value'])
     newtontable.add_rows([
-        [newtondict['secondlast']['value'], newtondict['secondlast']['iteration'], newtondict['secondlast']['error']],
-        [newtondict['last']['value'], newtondict['last']['iteration'], newtondict['last']['error']]
+        [newtondict['secondlast']['value'], newtondict['secondlast']['iteration'], newtondict['secondlast']['error'], newton_second_rel_err, newton_second_rel_err/abs(accepted_value)],
+        [newtondict['last']['value'], newtondict['last']['iteration'], newtondict['last']['error'], newton_last_rel_err, newton_last_rel_err/abs(accepted_value)]
     ])
 
     secanttable = PrettyTable()
     secanttable.field_names = field_names
+    secant_second_rel_err = abs(accepted_value - secantdict['secondlast']['value'])
+    secant_last_rel_err = abs(accepted_value - secantdict['last']['value'])
     secanttable.add_rows([
-        [secantdict['secondlast']['value'], secantdict['secondlast']['iteration'], secantdict['secondlast']['error']],
-        [secantdict['last']['value'], secantdict['last']['iteration'], secantdict['last']['error']]
+        [secantdict['secondlast']['value'], secantdict['secondlast']['iteration'], secantdict['secondlast']['error'], secant_second_rel_err, secant_second_rel_err/abs(accepted_value)],
+        [secantdict['last']['value'], secantdict['last']['iteration'], secantdict['last']['error'], secant_last_rel_err, secant_last_rel_err/abs(accepted_value)]
     ])
 
     falsetable = PrettyTable()
     falsetable.field_names = field_names
+    false_second_rel_err = abs(accepted_value - falsedict['secondlast']['value'])
+    false_last_rel_err = abs(accepted_value - falsedict['last']['value'])
     falsetable.add_rows([
-        [falsedict['secondlast']['value'], falsedict['secondlast']['iteration'], falsedict['secondlast']['error']],
-        [falsedict['last']['value'], falsedict['last']['iteration'], falsedict['last']['error']]
+        [falsedict['secondlast']['value'], falsedict['secondlast']['iteration'], falsedict['secondlast']['error'], false_second_rel_err, false_second_rel_err/abs(accepted_value)],
+        [falsedict['last']['value'], falsedict['last']['iteration'], falsedict['last']['error'], false_last_rel_err, false_last_rel_err/abs(accepted_value)]
     ])
 
     #display information
     print("Newton's Method:")
     print(newtontable)
-    newtonrelerr = abs(accepted_value - newtondict['last']['value'])
-    print(f'Relative Error: {newtonrelerr}\tAbsolute Error: {newtonrelerr/abs(accepted_value)}')
 
     print()
 
     print("Secant Method:")
     print(secanttable)
-    secantrelerr = abs(accepted_value - secantdict['last']['value'])
-    print(f'Relative Error: {secantrelerr}\tAbsolute Error: {secantrelerr/abs(accepted_value)}')
 
     print()
 
     print("False Position Method:")
     print(falsetable)
-    falserelerr = abs(accepted_value - falsedict['last']['value'])
-    print(f'Relative Error: {falserelerr}\tAbsolute Error: {falserelerr/abs(accepted_value)}')
 
     print()
 
     plt.show()
 
     # written response--------------------------------------------------------------------------------------------
-    # Newton's and Secant took the same amount of iterations with 4 iterations, and False Position took 6.
+    # Newton's and Secant took the same amount of iterations with 5 iterations, and False Position took 7.
     # Using Newton's to get the accepted value automatically gives the method a relative and absolue error of 0.
     # False Position has a higher relative and absolute error than Secant Method.
     # It's hard to say wheter Newton's or Secant are better than the other since they have the same number of iterations 
